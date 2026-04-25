@@ -151,9 +151,10 @@ footer{
   <b>Pham's Portfolio Project</b>
   <div>
     <a href="#data">Data</a>
-    <a href="#features">Preprocessing</a>
+    <a href="#features">Features</a>
+    <a href="#model">Model</a>
     <a href="#results">Results</a>
-    <a href="#camera">Camera Demo</a>
+    <a href="#camera">Camera</a>
     <a href="#repro">Run</a>
   </div>
 </div>
@@ -167,17 +168,15 @@ The test dataset uses simple single-food images, such as an apple, banana, donut
 </p>
 
 <div class="callout">
-<b>Educational project only.</b> This explores how computer vision could support faster nutrition logging and food recognition.
+This explores how computer vision could support faster nutrition logging and food recognition.
 </div>
 
 <span class="pill">Object Detection</span>
 <span class="pill">YOLO-World</span>
 <span class="pill">Food-only labels</span>
+<span class="pill">CSV dataset</span>
 <span class="pill">Live Camera Demo</span>
-<span class="pill">Bounding boxes</span>
 </header>
-
-<div class="grid">
 
 <section class="card" id="data">
 <h2>Data</h2>
@@ -202,11 +201,32 @@ orange,data/images/orange.jpg,Single orange
 </div>
 </section>
 
-<section class="card">
-<h2>Model & Results</h2>
+<section class="card" id="features">
+<h2>Feature Engineering / Image Preprocessing</h2>
+
+<p class="sub">
+Instead of using the images blindly, I converted YOLO's raw outputs into structured features:
+object label, confidence score, bounding box coordinates, and bounding box area.
+I also used a confidence threshold to filter weak predictions.
+</p>
+
+<ul>
+<li><b>Food-only class list:</b> the model uses labels from <code>food_classes.txt</code>.</li>
+<li><b>Image selection:</b> images are kept simple, usually one or two food objects at a time.</li>
+<li><b>Image resizing:</b> YOLO resizes images before inference.</li>
+<li><b>Confidence thresholding:</b> weak detections are filtered out using a confidence threshold.</li>
+<li><b>Bounding boxes:</b> predictions include x1, y1, x2, y2 coordinates.</li>
+<li><b>Bounding box area:</b> each detection is converted into a size feature.</li>
+<li><b>Detection table:</b> outputs are saved as <code>reports/detections.csv</code>.</li>
+</ul>
+</section>
+
+<section class="card" id="model">
+<h2>Model & Measurement</h2>
 
 <p class="sub">
 Model: <b>YOLO-World v2 medium</b>, an open-vocabulary object detector that can detect custom food labels.
+The model is measured using total detections, average confidence score, detected object counts, and the distribution of confidence scores across the image dataset.
 </p>
 
 <div class="kpi">
@@ -230,22 +250,6 @@ Model: <b>YOLO-World v2 medium</b>, an open-vocabulary object detector that can 
 <div class="value">Camera</div>
 </div>
 </div>
-</section>
-
-</div>
-
-<section class="card" id="features">
-<h2>Image Preprocessing and Output Features</h2>
-
-<ul>
-<li><b>Food-only class list:</b> the model uses labels from <code>food_classes.txt</code>.</li>
-<li><b>Image selection:</b> images are kept simple, usually one or two food objects at a time.</li>
-<li><b>Image resizing:</b> YOLO resizes images before inference.</li>
-<li><b>Confidence thresholding:</b> weak detections are filtered out using a confidence threshold.</li>
-<li><b>Bounding boxes:</b> predictions include x1, y1, x2, y2 coordinates.</li>
-<li><b>Class extraction:</b> detected labels become readable object names.</li>
-<li><b>Detection table:</b> outputs are saved as <code>reports/detections.csv</code>.</li>
-</ul>
 </section>
 
 <section class="card" id="results">
@@ -275,7 +279,7 @@ Model: <b>YOLO-World v2 medium</b>, an open-vocabulary object detector that can 
 </table>
 </section>
 
-<<section class="card" id="camera">
+<section class="card" id="camera">
 <h2>Try Live Camera Detection</h2>
 
 <p class="sub">
@@ -284,10 +288,10 @@ To try the live demo, run the command below in Terminal.
 </p>
 
 <div class="figure" style="margin-top:14px">
-  <img src="assets/banana_demo.png" alt="Live camera banana detection demo">
-  <div class="cap">
-    Example of how the live camera detection view could look with food labels and bounding boxes.
-  </div>
+<img src="assets/banana_demo.png" alt="Live camera banana detection demo">
+<div class="cap">
+Example of how the live camera detection view could look with food labels and bounding boxes.
+</div>
 </div>
 
 <div class="cmd">
@@ -349,7 +353,7 @@ python -m http.server 8000 --directory docs
 </code>
 </div>
 
-<h3>5) Open http://localhost:8000/</h3>
+<p class="small">Open http://localhost:8000/</p>
 </section>
 
 <footer>
