@@ -1,0 +1,17 @@
+{
+  "images_processed": 5,
+  "total_detections": 7,
+  "average_confidence": 0.6454,
+  "unique_objects": 6,
+  "top_objects": {
+    "tangerine": 2,
+    "apple": 1,
+    "banana": 1,
+    "donut": 1,
+    "pizza": 1,
+    "orange": 1
+  },
+  "confidence_threshold": 0.55,
+  "model": "yolov8m-worldv2.pt",
+  "classes_file": "food_classes.txt"
+}

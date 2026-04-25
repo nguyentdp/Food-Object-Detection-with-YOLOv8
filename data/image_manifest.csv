@@ -1,0 +1,6 @@
+image_id,source,description
+apple,data/images/apple.jpg,Single apple
+banana,data/images/banana.jpg,Single banana
+donut,data/images/donut.jpg,Single donut
+pizza,data/images/pizza.jpg,One pizza slice
+orange,data/images/orange.jpg,Single orange

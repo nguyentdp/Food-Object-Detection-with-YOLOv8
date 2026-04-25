@@ -1,0 +1,8 @@
+
+ultralytics==8.2.103
+numpy==1.26.4
+opencv-python
+pandas
+matplotlib
+pillow
+requests

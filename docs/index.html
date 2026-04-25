@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Food Object Detection with YOLO-World</title>
+
+<style>
+:root{
+  --bg:#fff3b0;
+  --text:#2b1600;
+  --muted:#6b4a1f;
+  --accent:#ff9f1c;
+  --line:rgba(120,70,0,.18);
+  --radius:18px;
+}
+
+body{
+  margin:0;
+  font-family:system-ui;
+  color:var(--text);
+  background:linear-gradient(135deg,#fff3b0 0%,#ffd166 45%,#f77f00 100%);
+}
+
+.wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.55);
+  border-radius:999px;
+  position:sticky;
+  top:14px;
+  backdrop-filter:blur(10px);
+}
+
+.nav a{color:var(--muted);margin-left:12px;text-decoration:none;font-size:14px}
+
+header,.card{
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.58);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-top:16px;
+  box-shadow:0 10px 30px rgba(120,70,0,.20);
+}
+
+header{padding:28px 22px}
+
+h1{margin:0;font-size:34px}
+.sub,li,.small{color:var(--muted)}
+
+.pill,.tag{
+  display:inline-block;
+  margin:5px 5px 0 0;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-size:13px;
+}
+
+.grid,.twocol{display:grid;gap:14px}
+
+@media(min-width:860px){
+  .grid,.twocol{grid-template-columns:1fr 1fr}
+}
+
+.callout{
+  padding:12px;
+  border-radius:14px;
+  background:rgba(255,159,28,.14);
+  border:1px solid rgba(255,159,28,.3);
+}
+
+.kpi{
+  display:grid;
+  gap:10px;
+  grid-template-columns:repeat(2,1fr);
+}
+
+.box{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.5);
+}
+
+.label{font-size:12px;color:var(--muted)}
+.value{font-size:18px;font-weight:700}
+
+.figure{
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.5);
+}
+
+.figure img{width:100%;display:block}
+
+.cap{
+  padding:10px;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid var(--line);
+}
+
+.cmd{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.55);
+  overflow:auto;
+}
+
+.btn{
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:12px;
+  background:#ff9f1c;
+  color:#2b1600;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.table{width:100%;border-collapse:collapse}
+
+.table th,.table td{
+  border-bottom:1px solid var(--line);
+  padding:9px;
+  text-align:left;
+}
+
+.table td{color:var(--muted)}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:22px;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<div class="nav">
+  <b>Pham's Portfolio Project</b>
+  <div>
+    <a href="#data">Data</a>
+    <a href="#features">Preprocessing</a>
+    <a href="#results">Results</a>
+    <a href="#camera">Camera Demo</a>
+    <a href="#repro">Run</a>
+  </div>
+</div>
+
+<header>
+<h1>Food Object Detection with YOLO-World</h1>
+
+<p class="sub">
+This project uses <b>YOLO-World</b>, an open-vocabulary object detection model, to detect food-related objects from images and a live webcam feed.
+The test dataset uses simple single-food images, such as an apple, banana, donut, pizza, and orange, so the model can focus on clear food objects instead of mixed bowls or cluttered meal scenes.
+</p>
+
+<div class="callout">
+<b>Educational project only.</b> This explores how computer vision could support faster nutrition logging and food recognition.
+</div>
+
+<span class="pill">Object Detection</span>
+<span class="pill">YOLO-World</span>
+<span class="pill">Food-only labels</span>
+<span class="pill">Live Camera Demo</span>
+<span class="pill">Bounding boxes</span>
+</header>
+
+<div class="grid">
+
+<section class="card" id="data">
+<h2>Data</h2>
+
+<p class="sub">
+The dataset is controlled using a CSV image manifest. Each row contains an image ID, image source, and description.
+For this version, I selected images with one main food object at a time to improve detection clarity.
+</p>
+
+<span class="tag">data/image_manifest.csv</span>
+<span class="tag">food_classes.txt</span>
+
+<div class="cmd">
+<code>
+image_id,source,description<br>
+apple,data/images/apple.jpg,Single apple<br>
+banana,data/images/banana.jpg,Single banana<br>
+donut,data/images/donut.jpg,Single donut<br>
+pizza,data/images/pizza.jpg,One pizza slice<br>
+orange,data/images/orange.jpg,Single orange
+</code>
+</div>
+</section>
+
+<section class="card">
+<h2>Model & Results</h2>
+
+<p class="sub">
+Model: <b>YOLO-World v2 medium</b>, an open-vocabulary object detector that can detect custom food labels.
+</p>
+
+<div class="kpi">
+<div class="box">
+<div class="label">Model</div>
+<div class="value">YOLO-World</div>
+</div>
+
+<div class="box">
+<div class="label">Confidence</div>
+<div class="value">0.55</div>
+</div>
+
+<div class="box">
+<div class="label">Output</div>
+<div class="value">CSV</div>
+</div>
+
+<div class="box">
+<div class="label">Demo</div>
+<div class="value">Camera</div>
+</div>
+</div>
+</section>
+
+</div>
+
+<section class="card" id="features">
+<h2>Image Preprocessing and Output Features</h2>
+
+<ul>
+<li><b>Food-only class list:</b> the model uses labels from <code>food_classes.txt</code>.</li>
+<li><b>Image selection:</b> images are kept simple, usually one or two food objects at a time.</li>
+<li><b>Image resizing:</b> YOLO resizes images before inference.</li>
+<li><b>Confidence thresholding:</b> weak detections are filtered out using a confidence threshold.</li>
+<li><b>Bounding boxes:</b> predictions include x1, y1, x2, y2 coordinates.</li>
+<li><b>Class extraction:</b> detected labels become readable object names.</li>
+<li><b>Detection table:</b> outputs are saved as <code>reports/detections.csv</code>.</li>
+</ul>
+</section>
+
+<section class="card" id="results">
+<h2>Visual Results</h2>
+
+<div class="twocol">
+<div class="figure">
+<img src="assets/class_counts.png" alt="Class count chart">
+<div class="cap">Class count chart showing the most frequently detected food objects.</div>
+</div>
+
+<div class="figure">
+<img src="assets/confidence_histogram.png" alt="Confidence histogram">
+<div class="cap">Confidence score distribution from the model detections.</div>
+</div>
+</div>
+
+<h3>Example Detection Table</h3>
+
+<table class="table">
+<tr><th>Object</th><th>Confidence</th><th>Output</th></tr>
+<tr><td>apple</td><td>0.82</td><td>bounding box</td></tr>
+<tr><td>banana</td><td>0.87</td><td>bounding box</td></tr>
+<tr><td>donut</td><td>0.79</td><td>bounding box</td></tr>
+<tr><td>pizza</td><td>0.84</td><td>bounding box</td></tr>
+<tr><td>orange</td><td>0.76</td><td>bounding box</td></tr>
+</table>
+</section>
+
+<<section class="card" id="camera">
+<h2>Try Live Camera Detection</h2>
+
+<p class="sub">
+This project can also run on a webcam. Because this is a static portfolio page, the camera does not open directly inside the browser.
+To try the live demo, run the command below in Terminal.
+</p>
+
+<div class="figure" style="margin-top:14px">
+  <img src="assets/banana_demo.png" alt="Live camera banana detection demo">
+  <div class="cap">
+    Example of how the live camera detection view could look with food labels and bounding boxes.
+  </div>
+</div>
+
+<div class="cmd">
+<code>
+python src/camera_food_detection.py
+</code>
+</div>
+
+<p class="small">
+This opens your computer camera and detects food-related objects live using the labels from <code>food_classes.txt</code>.
+Press <b>q</b> in the camera window or use <b>Control + C</b> in Terminal to stop it.
+</p>
+
+<a class="btn" href="#repro">See Run Instructions</a>
+</section>
+
+<section class="card">
+<h2>Limitations</h2>
+
+<ul>
+<li>YOLO-World improves flexibility, but it can still confuse visually similar objects.</li>
+<li>Lighting, blur, camera angle, and object size affect detection quality.</li>
+<li>Food recognition is harder than general object detection because many foods look similar.</li>
+<li>Mixed meal images can be difficult, so this project uses clearer single-food test images.</li>
+<li>A future improvement would fine-tune YOLO on a custom food dataset.</li>
+</ul>
+</section>
+
+<section class="card" id="repro">
+<h2>How to Reproduce</h2>
+
+<h3>1) Install</h3>
+<div class="cmd">
+<code>
+python3 -m venv .venv<br>
+source .venv/bin/activate<br>
+pip install -r requirements.txt
+</code>
+</div>
+
+<h3>2) Run detection on images</h3>
+<div class="cmd">
+<code>
+python src/run_detection.py --manifest data/image_manifest.csv --model yolov8m-worldv2.pt --conf 0.55
+</code>
+</div>
+
+<h3>3) Run live camera detection</h3>
+<div class="cmd">
+<code>
+python src/camera_food_detection.py
+</code>
+</div>
+
+<h3>4) Preview portfolio page</h3>
+<div class="cmd">
+<code>
+python -m http.server 8000 --directory docs
+</code>
+</div>
+
+<h3>5) Open http://localhost:8000/</h3>
+</section>
+
+<footer>
+Built with Python + Ultralytics YOLO-World + Matplotlib
+</footer>
+
+</div>
+</body>
+</html>
